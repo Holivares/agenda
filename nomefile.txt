@@ -1,0 +1,5 @@
+personale
+numero appuntamenti: 3
+Persona :[nome=Leslie, cognome=Rotta], data :Sun Mar 03 16:10:00 CET 2024 durata:20 luogo: riunione
+Persona :[nome=Marco, cognome=Rotto], data :Mon Dec 04 13:10:00 CET 2023 durata:30 luogo: seminario
+Persona :[nome=Mario, cognome=Rossi], data :Thu Dec 07 15:00:00 CET 2023 durata:13 luogo: luogo1
