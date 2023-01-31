@@ -1,21 +1,20 @@
-package para2023;
-
+package edu.model;
+/**
+ *@author Evrard Holivares Ngali(20030188)
+ *@author Candice Leslie Malimeta(20027009)
+ */
 public class Persona implements Comparable<Persona> {
 	
 	private String nome;
 	private String cognome;
-	private String email;
 	
 	
-	public Persona(String nome, String cognome, String email) {
+	public Persona(String nome, String cognome) {
 		this.nome = nome;
 		this.cognome = cognome;
-		this.email = email;
 	}
 
-    public String getEmail() {
-		return email;
-	}
+
 
 	public Persona() {
     	
@@ -43,7 +42,7 @@ public class Persona implements Comparable<Persona> {
 
 
 
- // verifica se oggetto persona é lo stesso per altro
+ // verifica se oggetto persona ï¿½ lo stesso per altro
 	// ritorna 0 se lo stesso
 	@Override
 	public int compareTo(Persona pers) {

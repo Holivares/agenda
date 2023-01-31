@@ -1,5 +1,1 @@
-personale
-numero appuntamenti: 3
-Persona :[nome=Leslie, cognome=Rotta], data :Sun Mar 03 16:10:00 CET 2024 durata:20 luogo: riunione
-Persona :[nome=Marco, cognome=Rotto], data :Mon Dec 04 13:10:00 CET 2023 durata:30 luogo: seminario
-Persona :[nome=Mario, cognome=Rossi], data :Thu Dec 07 15:00:00 CET 2023 durata:13 luogo: luogo1
+{"agendaNome":"Agenda2","numeroAppuntamenti":3,"appuntamenti":[{"data":"06-09-2025;10:15:50","durata":13,"persona":{"nome":"Rossana","cognome":"Pampi"},"luogo":"Ufficio"},{"data":"02-11-2023;08:00:00","durata":30,"persona":{"nome":"Rossana","cognome":"Pampi"},"luogo":"Seminario"},{"data":"02-02-2024;18:30:00","durata":20,"persona":{"nome":"Leslie","cognome":"Rotta"},"luogo":"Sala"}]}

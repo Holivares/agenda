@@ -1,18 +1,25 @@
-package para2023;
+package edu.model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Vector;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+/**
+ *@author Evrard Holivares Ngali(20030188)
+ *@author Candice Leslie Malimeta(20027009)
+ */
 public class Agenda  implements Iterable<Appuntamento>{
 	
 	private String nomeAgenda;
-	
-	
+
+	private static Vector<Appuntamento> appuntamenti;
+
+	public static void aggiungiAppuntamento(String s, Persona p1, int i, String ufficio) {
+	}
+
+
 	public String getNomeAgenda() {
 		return nomeAgenda;
 	}
@@ -20,27 +27,29 @@ public class Agenda  implements Iterable<Appuntamento>{
 	public void setNomeAgenda(String nomeAgenda) {
 		this.nomeAgenda = nomeAgenda;
 	}
-	private Vector<Appuntamento> appuntamenti;
-	
-	
+
+	public void setAppuntamenti ( Vector<Appuntamento> appuntamenti ) {
+		this.appuntamenti = appuntamenti;
+	}
+
+	public Agenda() {}
+	/*Crea un agenda con nome*/
 	public Agenda(String nomeAgenda ) {
 		this.nomeAgenda = nomeAgenda;
 		appuntamenti = new Vector<Appuntamento>();
 		
 	}
-
-    public void aggiungiAppuntamento(Appuntamento app) {
+	/*Rimuove un agenda anche se contiene degli appuntamenti*/
+	public static void removeAgenda( List<Agenda> agenda, String nomeAgenda ){
+		boolean response = agenda.removeIf(current -> current.nomeAgenda.equals( nomeAgenda ));
+		System.out.println( "*** response = " + response );
+	}
+	/*Aggiunge un appuntamento in un agenda */
+    public static  void aggiungiAppuntamento(Appuntamento app) {
     	appuntamenti.add(app);
+
     }
-    
-    public void rimuovereAppuntamento(Appuntamento appuntamento) {
-    	appuntamenti.remove(appuntamento);
-    }
-    
-    public void cancellaAgenda() {
-    	appuntamenti.removeAllElements();
-    }
-    
+	/*Ordina un agenda*/
     public void ordina() {
     	Collections.sort(appuntamenti);
     }
@@ -51,38 +60,26 @@ public class Agenda  implements Iterable<Appuntamento>{
 		
 		return this.appuntamenti.iterator();
 	}
-	
+	/*Restitisce un appuntamento*/
 	public Vector<Appuntamento> getAppuntamenti(){
 		return this.appuntamenti;
 	}
-
+	/*Scrive su file l'appuntamento creato*/
 	public void scrivereSulfile(String nomeDelFile) throws Exception {
-		try {  
-            BufferedWriter writer = new BufferedWriter(new FileWriter(nomeDelFile+".txt"));
-            
-            writer.write(this.nomeAgenda+"\n");
-            writer.write("numero appuntamenti: "+appuntamenti.size()+"\n");
-            
-            for(int i=0; i<appuntamenti.size(); i++) {
-            	writer.write(appuntamenti.get(i).toString());
-            	
-				/*String tmp = appuntamenti.get(i).getPersona().getNome()+ " "+appuntamenti.get(i).getPersona().getCognome()+" "+
-            			appuntamenti.get(i).getData().getDay()+"-"+appuntamenti.get(i).getData().getMonth()+"-"+appuntamenti.get(i).getData().getYear()+" "+
-            			appuntamenti.get(i).getData().getHours()+"-"+appuntamenti.get(i).getData().getMinutes()+" "+appuntamenti.get(i).getDurata()+ " "+appuntamenti.get(i).getLuogo();
-            	System.out.println(tmp);
-            	writer.write(tmp);*/
-            }
-  
-            // Closes the writer
-            writer.close();
-        }
-  
-        catch (Exception e) {
+		AgendaFileConverter agendaFileConverter = new AgendaFileConverter();
+		agendaFileConverter.setAgendaNome( this.getNomeAgenda() );
+		agendaFileConverter.setAppuntamenti( this.getAppuntamenti() );
+		agendaFileConverter.setNumeroAppuntamenti( this.getAppuntamenti().size() );
+		String gsonResult = new GsonBuilder().setDateFormat( "dd-MM-yyyy;HH:mm:ss" ).create().toJson( agendaFileConverter );
+		System.out.println( "*** gsonResult = " + gsonResult );
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomeDelFile+".txt"))){
+			writer.write( gsonResult );
+        } catch (Exception e) {
         	throw new Exception("Errore durante la scritura sul file e=" +e.getStackTrace());
         }
 	}
 	
-	
+	/*Confronta gli appuntamenti*/
 	public boolean inConflitto(Appuntamento altro) {
 		
 		for(int i=0;i<appuntamenti.size();i++) {
@@ -95,47 +92,32 @@ public class Agenda  implements Iterable<Appuntamento>{
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
-	// ici cette methode me permet de creer un agenda en appeleant la agenda.readcontacts  quest 3
+	/*permette di creare un agenda chiamando prendendo informazioni dal file*/
 
-	public  static Agenda readContactsFile(String nomeDelFile) throws Exception {
-		Agenda agenda = new Agenda(nomeDelFile);
-		
-		//gets the info from the file
-		BufferedReader reader = new BufferedReader(new FileReader(nomeDelFile+".txt"));
-				
-		String temp = reader.readLine();
-		
-		
-		//if the number is less then 1 throws an error
-		int tempInt = Integer.parseInt(temp);
-		if(tempInt < 1){
-			throw new Exception("Invalid number of contacts, enter 1 or greater");
-		}
-		
-		for(int i = 0;i < tempInt; i++) {
-			//gets all strings from the file and updates the count
-			String line = reader.readLine();
-			
-			String [] dati = line.split(" ");
-			if(dati.length != 6) throw new Exception("Invalid line format");
-			
-			Persona newPersona = new Persona(dati[0], dati[1] , dati[2]);
-			Appuntamento appuntamento = new Appuntamento(dati[2],dati[3],Integer.parseInt(dati[4]),dati[5]);
-			
-			appuntamento.setPersona(newPersona);
-			
-			agenda.aggiungiAppuntamento(appuntamento);
-		}
-		
+	public  static Agenda readContactsFile() throws Exception {
+		Agenda agenda = new Agenda();
+		AgendaFileConverter agendaFileConverter = null;
+		Vector<Appuntamento> listAppuntamento = new Vector<>();
+		//Ottiene informazioni dal file
+		String allLines = Files.readString(Paths.get( "nomefile.txt" ).toAbsolutePath());
+
+		Gson gson = new GsonBuilder().setDateFormat( "dd-MM-yyyy;HH:mm:ss" ).create();
+		System.out.println( "*** allLine = " + allLines );
+		agendaFileConverter = gson.fromJson( allLines,  AgendaFileConverter.class );
+
+		System.out.println( "*** agendaFileConverter = " + agendaFileConverter.getAgendaNome() );
+		agenda.setAppuntamenti( agendaFileConverter.getAppuntamenti() );
+		agenda.setNomeAgenda( agendaFileConverter.getAgendaNome() );
 		return agenda;
 	}
 	@Override
 	public String toString() {
 		return "Agenda [nomeAgenda=" + nomeAgenda + ",appuntamenti=" + appuntamenti + "]";
 	}
+
+
 
 }

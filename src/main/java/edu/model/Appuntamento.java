@@ -1,11 +1,12 @@
-package para2023;
+package edu.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
+/**
+ *@author Evrard Holivares Ngali(20030188)
+ *@author Candice Leslie Malimeta(20027009)
+ */
 public class Appuntamento implements Comparable<Appuntamento>{
 	
 	private Date data;
@@ -15,17 +16,16 @@ public class Appuntamento implements Comparable<Appuntamento>{
 	
 	
 	//COSTRUTTORE
-		public Appuntamento (String data, String orario, int durata,String luogo) throws Exception {
-			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy'T'HH-mm");
-	
+		public Appuntamento (String data, Persona persona, int durata,String luogo) {
+
 			try {
-				this.data = format.parse(data+'T'+orario);
-			} catch (ParseException e) {
-				throw new Exception("Invalid date format e={}",e);
-				
+				this.data = new SimpleDateFormat( "dd-MM-yyyy;HH:mm:ss" ).parse( data );
+			} catch( ParseException e ) {
+				throw new RuntimeException( e );
 			}
 			this.durata = durata;
 			this.luogo = luogo;
+			this.persona = persona;
 			
 		}
 				
@@ -36,14 +36,11 @@ public class Appuntamento implements Comparable<Appuntamento>{
 			long tmp1 = this.data.toInstant().getEpochSecond();
 			long minutiDaAggiungere = durata * 60;
 			long tmp2 = altro.getData().toInstant().getEpochSecond();
-			
+
 			if (tmp2>tmp1 && tmp2 < tmp1+minutiDaAggiungere ) {
 				return false;
 			}
-			
-			/*if (altro.getData().after(data) || altro.getData().before(data)){
-				return true;
-			}*/
+
 			return true;
 		}
 
@@ -64,10 +61,10 @@ public class Appuntamento implements Comparable<Appuntamento>{
 				}
 				else if(this.getData().getDay() > altro.getData().getDay())
 						return 1;
-					else 
+					else
 						return -1;
 			}
-			else if(this.getData().getMonth() > altro.getData().getMonth())	
+			else if(this.getData().getMonth() > altro.getData().getMonth())
 					return 1;
 				else
 					return -1;
@@ -83,34 +80,7 @@ public class Appuntamento implements Comparable<Appuntamento>{
 		public String getLuogo(){
 			return this.luogo;
 		}
-		
-		/*public void setData(String data){
-			if (data.length() == 5) {
-				int mese = Integer.parseInt(data.substring(0,2));
-				int giorno = Integer.parseInt(data.substring(3));
-				if (mese>0 && mese<=12) {
-					if(giorno>0 && giorno<=31) {
-						data = this.data;
-					}
-					else 
-						throw new IllegalArgumentException ("Giorno non valido  ");
-				}
-				else
-					throw new IllegalArgumentException ("Mese non valido ");
-			}
-			else 
-				throw new IllegalArgumentException ("Data non valida ");
-		}
-
-		public int getGiorno(){
-			return Integer.parseInt(data.substring(3));
-		}
-
-		public int getMese(){
-			return Integer.parseInt(data.substring(0,2));
-		}*/
-
-		public Date getData() {
+		public Date getData () {
 			return this.data;
 		}
 			
